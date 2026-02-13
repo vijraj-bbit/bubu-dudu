@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Vijita Das, Be My Valentine 💘</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
@@ -38,21 +38,20 @@ body {
   width:90%;
   max-width:380px;
   padding:35px 25px 40px;
-  background:rgba(255,255,255,0.95);
+  background:rgba(255,255,255,0.97);
   border-radius:28px;
   text-align:center;
   box-shadow:0 25px 70px rgba(0,0,0,0.25);
-  position:relative;
 }
 
 .emoji {
-  font-size:60px;
+  font-size:clamp(48px,6vw,60px);
   margin-bottom:15px;
 }
 
 h2 {
   font-family:'Playfair Display', serif;
-  font-size:22px;
+  font-size:clamp(18px,4.5vw,24px);
   color:#4a1c2f;
   margin-bottom:30px;
   line-height:1.4;
@@ -60,7 +59,7 @@ h2 {
 
 .buttons {
   position:relative;
-  height:130px;
+  height:150px;
   width:100%;
 }
 
@@ -70,9 +69,9 @@ button {
   border-radius:40px;
   border:none;
   font-size:15px;
-  font-weight:500;
+  font-weight:600;
   cursor:pointer;
-  transition:0.2s ease;
+  transition:all 0.25s ease;
   -webkit-tap-highlight-color:transparent;
 }
 
@@ -80,21 +79,22 @@ button:active { transform:scale(0.92); }
 
 #yes {
   left:15%;
-  top:50px;
+  top:65px;
   background:linear-gradient(135deg,#ff4d6d,#ff758f);
   color:white;
+  min-width:110px;
 }
 
 #no {
   left:60%;
-  top:50px;
+  top:65px;
   background:white;
   color:#777;
 }
 
 .hint {
   margin-top:18px;
-  font-size:12px;
+  font-size:13px;
   color:#666;
   font-style:italic;
 }
@@ -120,6 +120,8 @@ const noBtn = document.getElementById("no");
 const yesBtn = document.getElementById("yes");
 const area = document.getElementById("area");
 
+let yesScale = 1;
+
 function isOverlapping(rect1, rect2) {
   return !(rect1.right < rect2.left ||
            rect1.left > rect2.right ||
@@ -130,9 +132,7 @@ function isOverlapping(rect1, rect2) {
 function moveNoButton(e) {
   e.preventDefault();
 
-  const areaRect = area.getBoundingClientRect();
   const yesRect = yesBtn.getBoundingClientRect();
-
   const btnW = noBtn.offsetWidth;
   const btnH = noBtn.offsetHeight;
 
@@ -144,17 +144,16 @@ function moveNoButton(e) {
   do {
     newX = Math.random() * maxX;
     newY = Math.random() * maxY;
-
     noBtn.style.left = newX + "px";
     noBtn.style.top = newY + "px";
-
     var noRect = noBtn.getBoundingClientRect();
     tries++;
-  } while (isOverlapping(noRect, yesRect) && tries < 50);
+  } while (isOverlapping(noRect, yesRect) && tries < 60);
 
-  // Slightly grow Yes button
-  let size = parseFloat(window.getComputedStyle(yesBtn).fontSize);
-  yesBtn.style.fontSize = (size + 0.5) + "px";
+  if (yesScale < 2.3) {
+    yesScale += 0.08;
+    yesBtn.style.transform = "scale(" + yesScale + ")";
+  }
 }
 
 noBtn.addEventListener("touchstart", moveNoButton, {passive:false});
@@ -174,12 +173,18 @@ yesBtn.addEventListener("click", function(){
 
   setTimeout(function(){
     document.body.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;font-family:Poppins;">
+      <div style="display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;font-family:Poppins;background:linear-gradient(135deg,#ffe6ec,#ffd1dc);padding:20px;">
         <div>
-          <h1 style="color:#ff4d6d;"> 💕</h1>
-          <p style="margin-top:10px;">Yay !! Bubu-ccepted, I love you Bubu 💘</p>
-          <p style="margin-top:10px;">You say you miss me and I wanna say I miss you so much 💘</p>
-          <p style="margin-top:10px;">Loving you is all I need to feel 💘</p>
+          <h1 style="color:#ff4d6d;font-size:clamp(26px,6vw,32px);font-family:'Playfair Display',serif;">💕</h1>
+          <p style="margin-top:15px;font-size:clamp(16px,4vw,18px);color:#4a1c2f;">
+            Yay !! Bubu-ccepted, I love you Bubu 💘
+          </p>
+          <p style="margin-top:12px;font-size:clamp(15px,4vw,17px);color:#4a1c2f;">
+            You say you miss me and I wanna say I miss you so much 💘
+          </p>
+          <p style="margin-top:12px;font-size:clamp(15px,4vw,17px);color:#4a1c2f;">
+            Loving you is all I need to feel 💘
+          </p>
         </div>
       </div>`;
   },400);
